@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en" onselectstart="return false">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Author" content="小龙老师">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>Document</title>
+  <style type="text/css">
+	*{margin:0px;padding:0px;}
+	body{background:#000;
+		overflow:hidden;}
+	#perspective{perspective:800px;/*场景景深*/}
+	#wrap{width:120px;
+		  height:180px;
+		  margin:150px auto;
+		  position:relative;
+		  transform-style:preserve-3d;/*场景3d*/
+		  transform:rotateX(-20deg) rotateY(0deg);
+		  }
+	#wrap img{width:100%;
+			  height:100%;
+			  position:absolute;
+			  border-radius:1px;
+			  box-shadow:0 0 8px #f9f;}
+  </style>
+ </head>
+ <body>
+	<div id="perspective">
+		<div id="wrap">
+			<!--
+				360/11
+			-->
+			<img src="images/1.png" alt=""> 
+			<img src="images/2.png" alt=""> 
+			<img src="images/3.png" alt=""> 
+			<img src="images/4.png" alt=""> 
+			<img src="images/5.png" alt="">
+			<img src="images/6.png" alt="">
+			<img src="images/7.png" alt="">
+			<img src="images/8.png" alt="">
+			<img src="images/9.png" alt="">
+			<img src="images/10.png" alt="">
+			<img src="images/11.png" alt="">
+		</div>
+	</div>
+ </body>
+ <script>
+	window.onload=function(){ //浏览器加载后就执行
+		var oImg = document.getElementsByTagName("img");//在文档中通过标签名去获取元素节点 获取文档中所有的img元素节点 oImg[2]  括号里面为序列号 0开始
+		var oWarp=document.getElementById("wrap");//通过ID去获取
+		var Deg = 360/oImg.length;//获取旋转的平均值
+		var nowX,nowY,lastX,lastY,minusX=0;minusY=0;
+		var roY=0,roX=-20;
+		var timer=null;
+		for (var i=0;i<oImg.length;i++ )
+		//1.定义一个变量 2.做判断 3.执行语句 4.i++  下一步循环判断
+		{
+			oImg[i].style.transform='rotateY('+Deg*i+'deg) translateZ(350px)';//a+b=ab
+		}	
+		
+		document.onmousedown=function(e){
+			e=e||window.event;//火狐与IE一个兼容方法 || 或者
+			lastX=e.clientX;
+			lastY=e.clientY;
+			//鼠标按下
+			//console.log("鼠标按下");
+			this.onmousemove=function(e){
+				//鼠标滑动
+				nowX=e.clientX;
+				nowY=e.clientY;
+
+				minusX=nowX-lastX;//坐标轴的差
+				minusY=nowY-lastY;
+
+				e=e||window.event
+				//console.log(e.clientX,e.clientY);
+				roY+=minusY*0.1;  //roY=roY+minusY
+				roX-=minusX*0.2;
+
+
+				oWarp.style.transform='rotateX('+roY+'deg) rotateY('+roX+'deg) ';
+				//console.log(minusX,minusY);
+				lastX=nowX;
+				lastY=nowY;
+			}
+			this.onmouseup=function(){
+				//鼠标松开
+				this.onmousemove=null;//清除鼠标滑动事件
+				timer=setInterval(function(){
+					minusX*=0.97;
+					minusY*=0.97;
+					
+
+					roY+=minusY*0.1;  //roY=roY+minusY
+					roX-=minusX*0.2;
+
+					oWarp.style.transform='rotateX('+roY+'deg) rotateY('+roX+'deg) ';
+					
+					if (Math.abs(minusX)<0.1 && Math.abs(minusY)<0.1)
+					{
+						clearInterval(timer);
+					}
+				},13);
+			}
+		}
+	}
+ </script>
+</html>
